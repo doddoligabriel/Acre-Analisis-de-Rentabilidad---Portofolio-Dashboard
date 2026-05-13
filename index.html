@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio Dashboard — Cierre Abril 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0b0d14; --surface:#111520; --card:#161b27; --border:#222a3a;
+  --accent:#e8c547; --accent2:#5b8def; --green:#3ecf8e; --red:#f06060;
+  --text:#dde4f0; --muted:#5a6480; --subtle:#1c2335;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+.topbar{
+  background:#0d1220;border-bottom:1px solid var(--border);
+  padding:0 28px;display:flex;align-items:stretch;
+  position:sticky;top:0;z-index:200;
+}
+.brand{display:flex;align-items:center;gap:12px;padding:14px 0;margin-right:28px;border-right:1px solid var(--border);padding-right:22px;}
+.brand-mark{width:36px;height:36px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:#0b0d14;}
+.brand-name{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;}
+.brand-date{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px;}
+.nav-tabs{display:flex;align-items:stretch;}
+.nav-tab{padding:0 20px;display:flex;align-items:center;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .18s;white-space:nowrap;}
+.nav-tab:hover{color:var(--text);}
+.nav-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:24px;padding:10px 0;}
+.hstat{text-align:right;}
+.hstat-v{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--accent);}
+.hstat-l{font-size:10px;color:var(--muted);}
+
+.page{padding:28px;}
+.ov-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
+.ov-kpi{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;}
+.ov-kpi-v{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;}
+.ov-kpi-l{font-size:11px;color:var(--muted);margin-top:4px;}
+.ov-kpi-v.accent{color:var(--accent);}
+.ov-kpi-v.green{color:var(--green);}
+
+.proj-table{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;}
+.proj-table-head{display:grid;grid-template-columns:220px 1fr 1fr 1fr 110px 110px;padding:11px 20px;background:var(--subtle);font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;font-family:'DM Mono',monospace;}
+.proj-table-row{display:grid;grid-template-columns:220px 1fr 1fr 1fr 110px 110px;padding:14px 20px;border-top:1px solid var(--border);cursor:pointer;transition:background .15s;align-items:center;}
+.proj-table-row:hover{background:var(--subtle);}
+.ptc{font-size:13px;}
+.ptc.name{font-weight:600;font-family:'Syne',sans-serif;font-size:14px;}
+.ptc.mono{font-family:'DM Mono',monospace;font-size:12px;}
+.ptc.green{color:var(--green);font-family:'DM Mono',monospace;font-weight:600;}
+.ptc.accent{color:var(--accent);font-family:'DM Mono',monospace;font-weight:600;}
+.btn-sm{background:transparent;border:1px solid var(--border);border-radius:7px;padding:6px 14px;font-size:11px;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .18s;}
+.btn-sm:hover{border-color:var(--accent);color:var(--accent);}
+.badge{background:var(--subtle);border:1px solid var(--border);border-radius:4px;padding:2px 7px;font-size:10px;font-family:'DM Mono',monospace;color:var(--muted);margin-left:6px;}
+
+.proj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px;}
+.proj-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;cursor:pointer;transition:all .22s;position:relative;overflow:hidden;}
+.proj-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));}
+.proj-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 32px rgba(232,197,71,.1);}
+.pc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;}
+.pc-name{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;}
+.pc-badge{background:var(--subtle);border:1px solid var(--border);border-radius:6px;padding:3px 9px;font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);}
+.pc-util{font-family:'Syne',sans-serif;font-size:30px;font-weight:800;color:var(--green);}
+.pc-util.neg{color:var(--red);}
+.pc-util-l{font-size:11px;color:var(--muted);margin-top:2px;}
+.pc-metrics{display:flex;gap:10px;margin-top:14px;}
+.pc-metric{flex:1;background:var(--subtle);border-radius:8px;padding:9px 11px;}
+.pc-mv{font-family:'DM Mono',monospace;font-size:12px;}
+.pc-ml{font-size:10px;color:var(--muted);margin-top:3px;}
+.pc-protos{font-size:11px;color:var(--muted);margin-top:11px;}
+
+/* DETAIL */
+.detail-page{padding:28px;}
+.back-btn{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:13px;cursor:pointer;margin-bottom:22px;transition:color .18s;background:none;border:none;font-family:'DM Sans',sans-serif;}
+.back-btn:hover{color:var(--text);}
+.detail-hdr{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px 26px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;}
+.detail-title{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;}
+.detail-sub{font-size:12px;color:var(--muted);margin-top:4px;}
+.reset-btn{background:var(--subtle);border:1px solid var(--border);border-radius:10px;padding:10px 18px;font-size:13px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:7px;transition:all .2s;font-family:'DM Sans',sans-serif;}
+.reset-btn:hover{background:var(--accent);color:#0b0d14;border-color:var(--accent);}
+
+.proto-tabs-row{display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap;}
+.proto-tab{padding:9px 18px;border-radius:10px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--card);color:var(--muted);transition:all .18s;font-family:'DM Mono',monospace;}
+.proto-tab:hover{color:var(--text);border-color:var(--muted);}
+.proto-tab.active{background:var(--accent);color:#0b0d14;border-color:var(--accent);font-weight:700;}
+
+.solver-wrap{display:grid;grid-template-columns:330px 1fr;gap:18px;}
+@media(max-width:900px){.solver-wrap{grid-template-columns:1fr;}}
+
+.dials-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px;}
+.dials-hdr{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:18px;display:flex;align-items:center;gap:8px;}
+.dial-block{margin-bottom:20px;}
+.dial-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;font-family:'DM Mono',monospace;margin-bottom:6px;}
+.dial-display{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;margin-bottom:4px;}
+.dial-display .cur{font-size:13px;color:var(--muted);font-weight:400;}
+.dial-delta{font-size:11px;font-family:'DM Mono',monospace;margin-bottom:8px;min-height:16px;}
+.dial-delta.neutral{color:var(--muted);}
+.dial-delta.better{color:var(--green);}
+.dial-delta.worse{color:var(--red);}
+.slider{-webkit-appearance:none;width:100%;height:4px;border-radius:4px;background:var(--subtle);outline:none;cursor:pointer;}
+.slider::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--accent);cursor:pointer;border:3px solid var(--card);box-shadow:0 0 0 1px var(--accent);transition:transform .1s;}
+.slider::-webkit-slider-thumb:hover{transform:scale(1.2);}
+.slider-range{display:flex;justify-content:space-between;margin-top:5px;font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;}
+.divider{height:1px;background:var(--border);margin:18px 0;}
+.scenario-box{background:var(--subtle);border:1px solid var(--border);border-radius:9px;padding:11px 14px;display:flex;align-items:center;gap:10px;font-size:11px;font-family:'DM Mono',monospace;margin-top:20px;}
+.sdot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.sdot.base{background:var(--muted);}
+.sdot.better{background:var(--green);}
+.sdot.worse{background:var(--red);}
+.s-right{margin-left:auto;color:var(--muted);}
+
+.results-col{display:flex;flex-direction:column;gap:14px;}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:16px 18px;}
+.kpi.hi{border-color:rgba(232,197,71,.35);}
+.kpi.ok{border-color:rgba(62,207,142,.25);}
+.kpi-l{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;font-family:'DM Mono',monospace;margin-bottom:7px;}
+.kpi-v{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;transition:color .3s;}
+.kpi-v.accent{color:var(--accent);}
+.kpi-v.green{color:var(--green);}
+.kpi-v.red{color:var(--red);}
+.kpi-s{font-size:10px;color:var(--muted);margin-top:3px;font-family:'DM Mono',monospace;}
+
+.wf-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;}
+.wf-title{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;font-family:'DM Mono',monospace;margin-bottom:16px;}
+.wf-row{display:flex;align-items:center;gap:10px;margin-bottom:9px;}
+.wf-lbl{font-size:11px;color:var(--muted);width:190px;flex-shrink:0;}
+.wf-track{flex:1;height:18px;background:var(--subtle);border-radius:4px;overflow:hidden;}
+.wf-bar{height:100%;border-radius:4px;transition:width .4s ease;}
+.wf-bar.cost{background:linear-gradient(90deg,#5b8def,#3a6fd8);}
+.wf-bar.urb{background:linear-gradient(90deg,#8b5cf6,#6d44d6);}
+.wf-bar.terr{background:linear-gradient(90deg,#f59e0b,#d97706);}
+.wf-bar.ops{background:linear-gradient(90deg,#6b7280,#4b5563);}
+.wf-bar.fin{background:linear-gradient(90deg,#ec4899,#be185d);}
+.wf-bar.util{background:linear-gradient(90deg,#3ecf8e,#2ab57c);}
+.wf-bar.neg{background:linear-gradient(90deg,#f06060,#d94444);}
+.wf-val{font-family:'DM Mono',monospace;font-size:11px;width:88px;text-align:right;flex-shrink:0;}
+.wf-pct{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);width:40px;text-align:right;flex-shrink:0;}
+.wf-sep{height:1px;background:var(--border);margin:10px 0;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-mark">AR</div>
+    <div>
+      <div class="brand-name">Portfolio Dashboard</div>
+      <div class="brand-date">CIERRE ABRIL 2026</div>
+    </div>
+  </div>
+  <div class="nav-tabs">
+    <div class="nav-tab active" id="tab-portfolio" onclick="goPage('portfolio')">📊 Portfolio</div>
+    <div class="nav-tab" id="tab-proyectos" onclick="goPage('proyectos')">🏗️ Proyectos</div>
+  </div>
+  <div class="topbar-right">
+    <div class="hstat"><div class="hstat-v" id="hdr-rev">—</div><div class="hstat-l">Revenue Portfolio</div></div>
+    <div class="hstat"><div class="hstat-v" id="hdr-util">—</div><div class="hstat-l">Utilidad Total</div></div>
+    <div class="hstat"><div class="hstat-v" id="hdr-margen">—</div><div class="hstat-l">Margen Promedio</div></div>
+  </div>
+</div>
+
+<!-- PAGE: PORTFOLIO -->
+<div id="page-portfolio" class="page">
+  <div class="ov-kpis" id="ov-kpis"></div>
+  <div class="proj-table">
+    <div class="proj-table-head">
+      <div>Proyecto</div><div>Prototipos</div><div>Precio Lista</div>
+      <div>Utilidad Orig.</div><div>Margen</div><div></div>
+    </div>
+    <div id="ov-table-body"></div>
+  </div>
+</div>
+
+<!-- PAGE: PROYECTOS (grid) -->
+<div id="page-proyectos" class="page" style="display:none">
+  <div class="proj-grid" id="proj-grid"></div>
+</div>
+
+<!-- PAGE: DETAIL -->
+<div id="page-detail" class="detail-page" style="display:none">
+  <button class="back-btn" id="back-btn" onclick="goBack()">← Volver</button>
+  <div class="detail-hdr">
+    <div>
+      <div class="detail-title" id="det-name">—</div>
+      <div class="detail-sub" id="det-sub">—</div>
+    </div>
+    <button class="reset-btn" onclick="resetProto()">↺ Reset a valores originales</button>
+  </div>
+  <div class="proto-tabs-row" id="proto-tabs"></div>
+  <div class="solver-wrap">
+    <div class="dials-card">
+      <div class="dials-hdr">🎛️ Solver de Escenarios</div>
+      <div class="dial-block">
+        <div class="dial-label">Fila 6 — Precio de Lista ($/unidad)</div>
+        <div class="dial-display"><span class="cur">$</span><span id="disp-precio">—</span></div>
+        <div class="dial-delta neutral" id="delta-precio">valor base</div>
+        <input type="range" class="slider" id="sl-precio" min="0" max="100" value="50" oninput="recalc()">
+        <div class="slider-range"><span id="rng-precio-min">—</span><span style="color:var(--muted)">base ±30%</span><span id="rng-precio-max">—</span></div>
+      </div>
+      <div class="divider"></div>
+      <div class="dial-block">
+        <div class="dial-label">Fila 10 — Directos Ejercidos Edificación ($/m²)</div>
+        <div class="dial-display"><span class="cur">$</span><span id="disp-edif">—</span></div>
+        <div class="dial-delta neutral" id="delta-edif">valor base</div>
+        <input type="range" class="slider" id="sl-edif" min="0" max="100" value="50" oninput="recalc()">
+        <div class="slider-range"><span id="rng-edif-min">—</span><span style="color:var(--muted)">base ±30%</span><span id="rng-edif-max">—</span></div>
+      </div>
+      <div class="divider"></div>
+      <div class="dial-block">
+        <div class="dial-label">Fila 20 — Directos Ejercidos Urbanización ($/m²)</div>
+        <div class="dial-display"><span class="cur">$</span><span id="disp-urb">—</span></div>
+        <div class="dial-delta neutral" id="delta-urb">valor base</div>
+        <input type="range" class="slider" id="sl-urb" min="0" max="100" value="50" oninput="recalc()">
+        <div class="slider-range"><span id="rng-urb-min">—</span><span style="color:var(--muted)">base ±30%</span><span id="rng-urb-max">—</span></div>
+      </div>
+      <div class="scenario-box">
+        <div class="sdot base" id="sdot"></div>
+        <div id="s-text">Escenario Base — sin cambios</div>
+        <div class="s-right" id="s-right"></div>
+      </div>
+    </div>
+    <div class="results-col">
+      <div class="kpi-grid">
+        <div class="kpi hi"><div class="kpi-l">Utilidad Antes ISR</div><div class="kpi-v accent" id="kv-util">—</div><div class="kpi-s" id="ks-util">—</div></div>
+        <div class="kpi ok"><div class="kpi-l">Precio de Recuperación</div><div class="kpi-v green" id="kv-precio">—</div><div class="kpi-s" id="ks-precio">—</div></div>
+        <div class="kpi"><div class="kpi-l">Costo Total / Casa</div><div class="kpi-v" id="kv-costo">—</div><div class="kpi-s">antes de ISR</div></div>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi"><div class="kpi-l">Total Costo Edificación</div><div class="kpi-v" id="kv-edif">—</div><div class="kpi-s" id="ks-edif">—</div></div>
+        <div class="kpi"><div class="kpi-l">Urbanización / Lote</div><div class="kpi-v" id="kv-urb">—</div><div class="kpi-s" id="ks-urb">—</div></div>
+        <div class="kpi"><div class="kpi-l">Costo Total Terreno</div><div class="kpi-v" id="kv-terr">—</div><div class="kpi-s" id="ks-terr">—</div></div>
+      </div>
+      <div class="wf-card">
+        <div class="wf-title">Desglose de costos vs. precio de lista</div>
+        <div id="wf-rows"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+//  DATA — Cierre Abril 2026
+// ═══════════════════════════════════════════════════════════════
+const PROJECTS = {
+  "Reserva Valle": [
+    { mts2:183, units:35,  mts2_terr:127.5, precio_lista:3497800, directos_edif:6439.76, edif_np:699.86, ind_edif:284.90, tram_edif:149.41, directos_urb:2352.71, urb_np:572.98, ind_urb:145.16, tram_urb:805.04, urb_lote:494176, terreno:740990, gastos_admon:291267, gastos_venta:139912, costo_fin:158368, utilidad_orig:759276,  util_pct_orig:0.2171 },
+    { mts2:187, units:1,   mts2_terr:127.5, precio_lista:3535100, directos_edif:6789.19, edif_np:693.89, ind_edif:296.14, tram_edif:165.48, directos_urb:2352.71, urb_np:572.98, ind_urb:145.16, tram_urb:805.04, urb_lote:494176, terreno:740990, gastos_admon:297633, gastos_venta:141404, costo_fin:161018, utilidad_orig:685958,  util_pct_orig:0.1940 },
+    { mts2:194, units:29,  mts2_terr:127.5, precio_lista:3800000, directos_edif:6104.81, edif_np:696.07, ind_edif:296.14, tram_edif:165.48, directos_urb:2352.71, urb_np:572.98, ind_urb:145.16, tram_urb:805.04, urb_lote:494176, terreno:740990, gastos_admon:308775, gastos_venta:152000, costo_fin:165655, utilidad_orig:1000377, util_pct_orig:0.2633 },
+    { mts2:241, units:56,  mts2_terr:127.5, precio_lista:4223500, directos_edif:6142.10, edif_np:696.07, ind_edif:296.14, tram_edif:165.48, directos_urb:2352.71, urb_np:572.98, ind_urb:145.16, tram_urb:805.04, urb_lote:494176, terreno:740990, gastos_admon:383581, gastos_venta:168940, costo_fin:196791, utilidad_orig:945031,  util_pct_orig:0.2238 }
+  ],
+  "Gran Reserva Apalaches": [
+    { mts2:210, units:0,   mts2_terr:131.25, precio_lista:4103859, directos_edif:5139.69, edif_np:407.29, ind_edif:116.22, tram_edif:152.98, directos_urb:2451.34, urb_np:258.59, ind_urb:130.95, tram_urb:312.46, urb_lote:413876, terreno:856823, gastos_admon:333432, gastos_venta:164154, costo_fin:68751,  utilidad_orig:1434100, util_pct_orig:0.3495 },
+    { mts2:260, units:0,   mts2_terr:131.25, precio_lista:4815000, directos_edif:5573.40, edif_np:385.97, ind_edif:116.29, tram_edif:152.00, directos_urb:2451.34, urb_np:258.59, ind_urb:130.95, tram_urb:312.46, urb_lote:413876, terreno:856823, gastos_admon:412821, gastos_venta:192600, costo_fin:81101,  utilidad_orig:1621263, util_pct_orig:0.3367 }
+  ],
+  "Reserva Cumbres Rios": [
+    { mts2:137, units:9,   mts2_terr:119, precio_lista:3100000, directos_edif:5372.78, edif_np:554.36, ind_edif:204.26, tram_edif:116.40, directos_urb:1287.23, urb_np:250.08, ind_urb:65.98, tram_urb:201.80, urb_lote:214806, terreno:865806,  gastos_admon:239977, gastos_venta:124000, costo_fin:112852, utilidad_orig:884976,  util_pct_orig:0.2855 },
+    { mts2:148, units:9,   mts2_terr:119, precio_lista:3500000, directos_edif:5604.15, edif_np:562.49, ind_edif:204.26, tram_edif:116.40, directos_urb:1287.23, urb_np:250.08, ind_urb:65.98, tram_urb:201.80, urb_lote:214806, terreno:949806,  gastos_admon:259246, gastos_venta:140000, costo_fin:121913, utilidad_orig:1051156, util_pct_orig:0.3003 },
+    { mts2:163, units:2,   mts2_terr:119, precio_lista:3700000, directos_edif:5884.24, edif_np:556.89, ind_edif:204.26, tram_edif:116.40, directos_urb:1287.23, urb_np:250.08, ind_urb:65.98, tram_urb:201.80, urb_lote:214806, terreno:991806,  gastos_admon:285521, gastos_venta:148000, costo_fin:134269, utilidad_orig:1018673, util_pct_orig:0.2753 },
+    { mts2:178, units:16,  mts2_terr:119, precio_lista:3900000, directos_edif:5674.95, edif_np:517.50, ind_edif:172.59, tram_edif:125.97, directos_urb:1287.23, urb_np:250.08, ind_urb:65.98, tram_urb:201.80, urb_lote:214806, terreno:1033806, gastos_admon:311796, gastos_venta:156000, costo_fin:146625, utilidad_orig:1075016, util_pct_orig:0.2756 }
+  ],
+  "Cumbres Platino": [
+    { mts2:210, units:9,   mts2_terr:135, precio_lista:5372000, directos_edif:6537.43, edif_np:684.67, ind_edif:230.41, tram_edif:179.46, directos_urb:1375.29, urb_np:142.28, ind_urb:69.16, tram_urb:90.81, urb_lote:226467, terreno:2190354, gastos_admon:417644, gastos_venta:214880, costo_fin:231512, utilidad_orig:689699,  util_pct_orig:0.1284 },
+    { mts2:210, units:21,  mts2_terr:135, precio_lista:5395000, directos_edif:7520.17, edif_np:684.67, ind_edif:230.41, tram_edif:179.46, directos_urb:1375.29, urb_np:142.28, ind_urb:69.16, tram_urb:90.81, urb_lote:226467, terreno:2190354, gastos_admon:417644, gastos_venta:215800, costo_fin:231512, utilidad_orig:505402,  util_pct_orig:0.0937 },
+    { mts2:260, units:29,  mts2_terr:135, precio_lista:6100000, directos_edif:6840.33, edif_np:678.23, ind_edif:229.93, tram_edif:179.46, directos_urb:1375.29, urb_np:142.28, ind_urb:69.16, tram_urb:90.81, urb_lote:226467, terreno:2190354, gastos_admon:517083, gastos_venta:244000, costo_fin:249528, utilidad_orig:806572,  util_pct_orig:0.1322 }
+  ],
+  "Cumbres Calzadas": [
+    { mts2:152, units:19,  mts2_terr:112, precio_lista:2841026, directos_edif:5403.27, edif_np:703.96, ind_edif:231.64, tram_edif:37.12, directos_urb:2524.53, urb_np:306.34, ind_urb:64.01, tram_urb:140.62, urb_lote:339976, terreno:810731, gastos_admon:220143, gastos_venta:113641, costo_fin:129676, utilidad_orig:579446,  util_pct_orig:0.2040 },
+    { mts2:171, units:15,  mts2_terr:120, precio_lista:3037593, directos_edif:5012.76, edif_np:700.90, ind_edif:231.64, tram_edif:37.12, directos_urb:2524.53, urb_np:306.34, ind_urb:64.01, tram_urb:140.62, urb_lote:364260, terreno:868641, gastos_admon:247660, gastos_venta:121504, costo_fin:142861, utilidad_orig:613413,  util_pct_orig:0.2019 },
+    { mts2:183, units:19,  mts2_terr:112, precio_lista:3300000, directos_edif:5745.15, edif_np:702.75, ind_edif:231.76, tram_edif:37.12, directos_urb:2524.53, urb_np:306.34, ind_urb:64.01, tram_urb:140.62, urb_lote:339976, terreno:810731, gastos_admon:265040, gastos_venta:132000, costo_fin:144609, utilidad_orig:696489,  util_pct_orig:0.2111 },
+    { mts2:202, units:1,   mts2_terr:120, precio_lista:3490457, directos_edif:5136.47, edif_np:701.11, ind_edif:231.64, tram_edif:37.12, directos_urb:2524.53, urb_np:306.34, ind_urb:64.01, tram_urb:140.62, urb_lote:364260, terreno:868641, gastos_admon:292558, gastos_venta:139618, costo_fin:157795, utilidad_orig:774125,  util_pct_orig:0.2218 },
+    { mts2:211, units:14,  mts2_terr:120, precio_lista:3640565, directos_edif:5523.90, edif_np:701.11, ind_edif:231.64, tram_edif:37.12, directos_urb:2524.53, urb_np:306.34, ind_urb:64.01, tram_urb:140.62, urb_lote:364260, terreno:868641, gastos_admon:305593, gastos_venta:145623, costo_fin:162130, utilidad_orig:763072,  util_pct_orig:0.2096 }
+  ],
+  "Viento Sur": [
+    { mts2:213, units:49,  mts2_terr:190, precio_lista:5900000, directos_edif:7677.42, edif_np:300, ind_edif:220, tram_edif:100, directos_urb:2373.06, urb_np:130, ind_urb:80, tram_urb:260, urb_lote:540181, terreno:1253287, gastos_admon:507400, gastos_venta:236000, costo_fin:310412, utilidad_orig:1799990, util_pct_orig:0.3051 },
+    { mts2:268, units:56,  mts2_terr:190, precio_lista:6500000, directos_edif:7329.24, edif_np:300, ind_edif:100, tram_edif:220, directos_urb:2373.06, urb_np:130, ind_urb:80, tram_urb:260, urb_lote:540181, terreno:1253287, gastos_admon:559000, gastos_venta:260000, costo_fin:349295, utilidad_orig:1915860, util_pct_orig:0.2947 },
+    { mts2:319, units:59,  mts2_terr:190, precio_lista:7100000, directos_edif:7135.89, edif_np:300, ind_edif:100, tram_edif:220, directos_urb:2373.06, urb_np:130, ind_urb:80, tram_urb:260, urb_lote:540181, terreno:1253287, gastos_admon:610600, gastos_venta:284000, costo_fin:385349, utilidad_orig:2054356, util_pct_orig:0.2893 }
+  ],
+  "Reserva Condesa": [
+    { mts2:116, units:1005, mts2_terr:98, precio_lista:2150000, directos_edif:6071.58, edif_np:350, ind_edif:250, tram_edif:250, directos_urb:1993.71, urb_np:190, ind_urb:80, tram_urb:80, urb_lote:229684, terreno:402874, gastos_admon:184900, gastos_venta:0, costo_fin:0, utilidad_orig:0, util_pct_orig:0 }
+  ]
+};
+
+// ═══════════════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════════════
+let curProject   = null;
+let curProtoIdx  = 0;
+let prevPage     = 'portfolio';
+const slPos      = {}; // key = "project|idx" => {precio,edif,urb}
+
+// ═══════════════════════════════════════════════════════════════
+//  FORMAT HELPERS
+// ═══════════════════════════════════════════════════════════════
+function n(v, d=0){ if(v==null||isNaN(v)) return '—'; return v.toLocaleString('es-MX',{minimumFractionDigits:d,maximumFractionDigits:d}); }
+function fm(v){ if(v==null) return '—'; let a=Math.abs(v); if(a>=1e6) return '$'+(v/1e6).toFixed(2)+'M'; return '$'+n(v); }
+function pct(v){ return (v*100).toFixed(1)+'%'; }
+
+// ═══════════════════════════════════════════════════════════════
+//  PAGE NAVIGATION
+// ═══════════════════════════════════════════════════════════════
+function showOnly(pageId){
+  ['page-portfolio','page-proyectos','page-detail'].forEach(id=>{
+    document.getElementById(id).style.display = (id===pageId) ? '' : 'none';
+  });
+}
+
+function goPage(name){
+  prevPage = name;
+  showOnly('page-'+name);
+  document.getElementById('tab-portfolio').classList.toggle('active', name==='portfolio');
+  document.getElementById('tab-proyectos').classList.toggle('active', name==='proyectos');
+}
+
+function goBack(){
+  showOnly('page-'+prevPage);
+  document.getElementById('tab-portfolio').classList.toggle('active', prevPage==='portfolio');
+  document.getElementById('tab-proyectos').classList.toggle('active', prevPage==='proyectos');
+}
+
+function openProject(name, fromPage){
+  prevPage = fromPage;
+  curProject = name;
+  curProtoIdx = 0;
+
+  document.getElementById('det-name').textContent = name;
+  const protos = PROJECTS[name];
+  const totalU = protos.reduce((s,p)=>s+(p.units||0),0);
+  document.getElementById('det-sub').textContent =
+    protos.length+' prototipo'+(protos.length>1?'s':'')+' · Cierre Abril 2026 · '+n(totalU)+' unidades';
+
+  buildProtoTabs(protos);
+  loadProto(0);
+  showOnly('page-detail');
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  PROTO TABS
+// ═══════════════════════════════════════════════════════════════
+function buildProtoTabs(protos){
+  document.getElementById('proto-tabs').innerHTML = protos.map((p,i)=>`
+    <div class="proto-tab${i===0?' active':''}" id="ptab-${i}"
+         onclick="clickTab(${i})">
+      ${p.mts2} m² · $${n(p.precio_lista)}
+    </div>`).join('');
+}
+
+function clickTab(idx){
+  document.querySelectorAll('.proto-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('ptab-'+idx).classList.add('active');
+  curProtoIdx = idx;
+  loadProto(idx);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  LOAD PROTO
+// ═══════════════════════════════════════════════════════════════
+function loadProto(idx){
+  const p   = PROJECTS[curProject][idx];
+  const key = curProject+'|'+idx;
+  if(!slPos[key]) slPos[key]={precio:50,edif:50,urb:50};
+
+  setSlider('sl-precio','disp-precio','rng-precio-min','rng-precio-max', p.precio_lista,   slPos[key].precio);
+  setSlider('sl-edif',  'disp-edif',  'rng-edif-min',  'rng-edif-max',  p.directos_edif,  slPos[key].edif);
+  setSlider('sl-urb',   'disp-urb',   'rng-urb-min',   'rng-urb-max',   p.directos_urb,   slPos[key].urb);
+
+  recalc();
+}
+
+function setSlider(slId, dispId, minId, maxId, base, position){
+  const sl = document.getElementById(slId);
+  sl.dataset.base = base;
+  sl.value = position;
+  document.getElementById(minId).textContent = '$'+n(base*0.70);
+  document.getElementById(maxId).textContent = '$'+n(base*1.30);
+  document.getElementById(dispId).textContent = n(sliderVal(sl));
+}
+
+function sliderVal(sl){
+  const base = parseFloat(sl.dataset.base);
+  const t    = parseFloat(sl.value)/100;   // 0→1
+  return base*(0.70 + t*0.60);             // maps 0→0.70×base, 1→1.30×base
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  RECALCULATE — called on every slider move
+// ═══════════════════════════════════════════════════════════════
+function recalc(){
+  const p = PROJECTS[curProject][curProtoIdx];
+  const slP = document.getElementById('sl-precio');
+  const slE = document.getElementById('sl-edif');
+  const slU = document.getElementById('sl-urb');
+
+  const newPrecio = sliderVal(slP);
+  const newEdif   = sliderVal(slE);
+  const newUrb    = sliderVal(slU);
+
+  // Update display numbers
+  document.getElementById('disp-precio').textContent = n(newPrecio);
+  document.getElementById('disp-edif').textContent   = n(newEdif);
+  document.getElementById('disp-urb').textContent    = n(newUrb);
+
+  // Save positions
+  const key = curProject+'|'+curProtoIdx;
+  slPos[key] = { precio:parseFloat(slP.value), edif:parseFloat(slE.value), urb:parseFloat(slU.value) };
+
+  // Deltas
+  const dP = newPrecio - p.precio_lista;
+  const dE = newEdif   - p.directos_edif;
+  const dU = newUrb    - p.directos_urb;
+  setDelta('delta-precio', dP, p.precio_lista, true);
+  setDelta('delta-edif',   dE, p.directos_edif, false);
+  setDelta('delta-urb',    dU, p.directos_urb,  false);
+
+  // Cost model
+  const edif_m2_total = newEdif + p.edif_np + p.ind_edif + p.tram_edif;
+  const totalEdif     = edif_m2_total * p.mts2;
+  const urbRatio      = p.directos_urb > 0 ? newUrb/p.directos_urb : 1;
+  const newUrbLote    = p.urb_lote * urbRatio;
+  const costoTotal    = totalEdif + newUrbLote + p.terreno + p.gastos_admon + p.gastos_venta + p.costo_fin;
+  const utilidad      = newPrecio - costoTotal;
+  const utilPct       = newPrecio > 0 ? utilidad/newPrecio : 0;
+
+  // KPIs
+  const uEl = document.getElementById('kv-util');
+  uEl.textContent = '$'+n(utilidad);
+  uEl.className   = 'kpi-v '+(utilidad>=0?'accent':'red');
+  document.getElementById('ks-util').textContent   = pct(utilPct)+' del precio · Base: '+pct(p.util_pct_orig);
+  document.getElementById('kv-precio').textContent = '$'+n(newPrecio);
+  document.getElementById('ks-precio').textContent = 'Base original: $'+n(p.precio_lista);
+  document.getElementById('kv-costo').textContent  = '$'+n(costoTotal);
+  document.getElementById('kv-edif').textContent   = '$'+n(totalEdif);
+  document.getElementById('ks-edif').textContent   = pct(totalEdif/newPrecio)+' · $'+n(edif_m2_total)+'/m²';
+  document.getElementById('kv-urb').textContent    = '$'+n(newUrbLote);
+  document.getElementById('ks-urb').textContent    = pct(newUrbLote/newPrecio)+' del precio';
+  document.getElementById('kv-terr').textContent   = '$'+n(p.terreno);
+  document.getElementById('ks-terr').textContent   = pct(p.terreno/newPrecio)+' del precio';
+
+  // Scenario banner
+  const isBase = Math.abs(dP)<1 && Math.abs(dE)<1 && Math.abs(dU)<1;
+  const sdot   = document.getElementById('sdot');
+  const stext  = document.getElementById('s-text');
+  const sright = document.getElementById('s-right');
+  if(isBase){
+    sdot.className='sdot base'; stext.textContent='Escenario Base — sin cambios'; sright.textContent='';
+  } else if(utilidad > p.utilidad_orig){
+    sdot.className='sdot better'; stext.textContent='Escenario Optimista';
+    sright.textContent='+$'+n(utilidad-p.utilidad_orig)+' vs base';
+  } else {
+    sdot.className='sdot worse'; stext.textContent='Escenario Adverso';
+    sright.textContent='-$'+n(p.utilidad_orig-utilidad)+' vs base';
+  }
+
+  // Waterfall
+  buildWF(newPrecio, totalEdif, newUrbLote, p.terreno, p.gastos_admon, p.gastos_venta, p.costo_fin, utilidad);
+}
+
+function setDelta(elId, delta, base, isPrecio){
+  const el = document.getElementById(elId);
+  if(Math.abs(delta)<0.5){ el.textContent='valor base'; el.className='dial-delta neutral'; return; }
+  const sign = delta>0?'+':'';
+  el.textContent = sign+'$'+n(delta)+' ('+sign+(delta/base*100).toFixed(1)+'%)';
+  el.className   = 'dial-delta '+(isPrecio ? (delta>0?'better':'worse') : (delta>0?'worse':'better'));
+}
+
+function buildWF(precio, edif, urb, terr, admon, venta, fin, util){
+  const rows=[
+    {l:'Precio de Recuperación', v:precio, c:'util'},
+    {l:'Costo Edificación',       v:edif,  c:'cost'},
+    {l:'Urbanización / Lote',     v:urb,   c:'urb'},
+    {l:'Costo de Terreno',        v:terr,  c:'terr'},
+    {l:'Gastos Administración',   v:admon, c:'ops'},
+    {l:'Gastos de Venta',         v:venta, c:'ops'},
+    {l:'Costo Financiero',        v:fin,   c:'fin'},
+  ];
+  let html = rows.map(r=>{
+    const w = precio>0 ? Math.min(100,Math.abs(r.v)/precio*100) : 0;
+    return `<div class="wf-row">
+      <div class="wf-lbl">${r.l}</div>
+      <div class="wf-track"><div class="wf-bar ${r.c}" style="width:${w.toFixed(1)}%"></div></div>
+      <div class="wf-val">$${n(r.v)}</div>
+      <div class="wf-pct">${precio>0?pct(r.v/precio):'—'}</div>
+    </div>`;
+  }).join('');
+  html += '<div class="wf-sep"></div>';
+  const uw = precio>0 ? Math.min(100,Math.abs(util)/precio*100) : 0;
+  html += `<div class="wf-row">
+    <div class="wf-lbl" style="font-weight:600;color:var(--text)">UTILIDAD ANTES ISR</div>
+    <div class="wf-track"><div class="wf-bar ${util>=0?'util':'neg'}" style="width:${uw.toFixed(1)}%"></div></div>
+    <div class="wf-val" style="color:${util>=0?'var(--green)':'var(--red)'}">$${n(util)}</div>
+    <div class="wf-pct" style="color:${util>=0?'var(--green)':'var(--red)'}">${precio>0?pct(util/precio):'—'}</div>
+  </div>`;
+  document.getElementById('wf-rows').innerHTML = html;
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  RESET
+// ═══════════════════════════════════════════════════════════════
+function resetProto(){
+  slPos[curProject+'|'+curProtoIdx] = {precio:50,edif:50,urb:50};
+  loadProto(curProtoIdx);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  BUILD PORTFOLIO
+// ═══════════════════════════════════════════════════════════════
+function buildPortfolio(){
+  let totRev=0, totUtil=0, totU=0;
+  const summaries = Object.entries(PROJECTS).map(([name,protos])=>{
+    const units = protos.reduce((s,p)=>s+(p.units||0),0);
+    const rev   = protos.reduce((s,p)=>s+p.precio_lista*(p.units||0),0);
+    const util  = protos.reduce((s,p)=>s+p.utilidad_orig*(p.units||0),0);
+    const ms    = protos.map(p=>p.util_pct_orig).filter(v=>v>0);
+    const avgM  = ms.length ? ms.reduce((a,b)=>a+b,0)/ms.length : 0;
+    const minP  = Math.min(...protos.map(p=>p.precio_lista));
+    const maxP  = Math.max(...protos.map(p=>p.precio_lista));
+    totRev+=rev; totUtil+=util; totU+=units;
+    return {name,protos,units,rev,util,avgM,minP,maxP};
+  });
+
+  document.getElementById('hdr-rev').textContent    = fm(totRev);
+  document.getElementById('hdr-util').textContent   = fm(totUtil);
+  document.getElementById('hdr-margen').textContent = pct(totRev>0?totUtil/totRev:0);
+
+  document.getElementById('ov-kpis').innerHTML=`
+    <div class="ov-kpi"><div class="ov-kpi-v accent">${Object.keys(PROJECTS).length}</div><div class="ov-kpi-l">Proyectos Activos</div></div>
+    <div class="ov-kpi"><div class="ov-kpi-v">${n(totU)}</div><div class="ov-kpi-l">Unidades Totales</div></div>
+    <div class="ov-kpi"><div class="ov-kpi-v green">${fm(totRev)}</div><div class="ov-kpi-l">Revenue Portfolio</div></div>
+    <div class="ov-kpi"><div class="ov-kpi-v green">${fm(totUtil)}</div><div class="ov-kpi-l">Utilidad Total</div></div>`;
+
+  document.getElementById('ov-table-body').innerHTML = summaries.map(s=>`
+    <div class="proj-table-row" onclick="openProject('${s.name}','portfolio')">
+      <div class="ptc name">${s.name}<span class="badge">${s.protos.length}P</span></div>
+      <div class="ptc">${s.protos.map(p=>p.mts2+'m²').join(', ')}</div>
+      <div class="ptc mono">$${n(s.minP)} – $${n(s.maxP)}</div>
+      <div class="ptc accent">${fm(s.util)}</div>
+      <div class="ptc green">${pct(s.avgM)}</div>
+      <div class="ptc"><button class="btn-sm" onclick="event.stopPropagation();openProject('${s.name}','portfolio')">Ver Dashboard →</button></div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  BUILD PROYECTOS PAGE
+// ═══════════════════════════════════════════════════════════════
+function buildProyectos(){
+  document.getElementById('proj-grid').innerHTML = Object.entries(PROJECTS).map(([name,protos])=>{
+    const ms   = protos.map(p=>p.util_pct_orig).filter(v=>v>0);
+    const avgM = ms.length ? ms.reduce((a,b)=>a+b,0)/ms.length : 0;
+    const u    = protos.reduce((s,p)=>s+(p.units||0),0);
+    const minP = Math.min(...protos.map(p=>p.precio_lista));
+    const maxP = Math.max(...protos.map(p=>p.precio_lista));
+    return `
+      <div class="proj-card" onclick="openProject('${name}','proyectos')">
+        <div class="pc-top">
+          <div class="pc-name">${name}</div>
+          <div class="pc-badge">${protos.length} proto${protos.length>1?'s':''}</div>
+        </div>
+        <div class="pc-util${avgM<=0?' neg':''}">${pct(avgM)}</div>
+        <div class="pc-util-l">Margen promedio de utilidad</div>
+        <div class="pc-metrics">
+          <div class="pc-metric">
+            <div class="pc-mv">$${n(minP/1000)}K–$${n(maxP/1000)}K</div>
+            <div class="pc-ml">Precio lista</div>
+          </div>
+          <div class="pc-metric">
+            <div class="pc-mv">${n(u)}</div>
+            <div class="pc-ml">Unidades</div>
+          </div>
+        </div>
+        <div class="pc-protos">${protos.map(p=>p.mts2+'m²').join(' · ')}</div>
+      </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════════════
+buildPortfolio();
+buildProyectos();
+// Ensure clean initial state
+document.getElementById('page-portfolio').style.display = '';
+document.getElementById('page-proyectos').style.display = 'none';
+document.getElementById('page-detail').style.display    = 'none';
+</script>
+</body>
+</html>
