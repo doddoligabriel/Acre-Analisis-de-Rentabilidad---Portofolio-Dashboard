@@ -305,7 +305,7 @@ const PROJECTS = {
       dir_edif:5372.78,  edif_np:554.36,  ind_edif:204.26,  tram_edif:116.40,
       dir_urb:1287.23,   urb_np:250.08,   ind_urb:65.98,    tram_urb:201.80,
       urb_lote:214806,   isr_casa:16440,
-      terreno_f29:651000, terreno_f31:865806,
+      terreno_f29:651000, terreno_f31:865806, terreno_pct_precio:0.21,
       gastos_admon:239977, gastos_venta:124000, costo_fin:112852,
       utilidad_orig:884976, util_pct_orig:0.2855 },
     { mts2:148, units:9,   mts2_terr:119,
@@ -313,7 +313,7 @@ const PROJECTS = {
       dir_edif:5604.15,  edif_np:562.49,  ind_edif:204.26,  tram_edif:116.40,
       dir_urb:1287.23,   urb_np:250.08,   ind_urb:65.98,    tram_urb:201.80,
       urb_lote:214806,   isr_casa:17760,
-      terreno_f29:735000, terreno_f31:949806,
+      terreno_f29:735000, terreno_f31:949806, terreno_pct_precio:0.21,
       gastos_admon:259246, gastos_venta:140000, costo_fin:121913,
       utilidad_orig:1051156, util_pct_orig:0.3003 },
     { mts2:163, units:2,   mts2_terr:119,
@@ -321,7 +321,7 @@ const PROJECTS = {
       dir_edif:5884.24,  edif_np:556.89,  ind_edif:204.26,  tram_edif:116.40,
       dir_urb:1287.23,   urb_np:250.08,   ind_urb:65.98,    tram_urb:201.80,
       urb_lote:214806,   isr_casa:19560,
-      terreno_f29:777000, terreno_f31:991806,
+      terreno_f29:777000, terreno_f31:991806, terreno_pct_precio:0.21,
       gastos_admon:285521, gastos_venta:148000, costo_fin:134269,
       utilidad_orig:1018673, util_pct_orig:0.2753 },
     { mts2:178, units:16,  mts2_terr:119,
@@ -329,7 +329,7 @@ const PROJECTS = {
       dir_edif:5674.95,  edif_np:517.50,  ind_edif:172.59,  tram_edif:125.97,
       dir_urb:1287.23,   urb_np:250.08,   ind_urb:65.98,    tram_urb:201.80,
       urb_lote:214806,   isr_casa:21360,
-      terreno_f29:819000, terreno_f31:1033806,
+      terreno_f29:819000, terreno_f31:1033806, terreno_pct_precio:0.21,
       gastos_admon:311796, gastos_venta:156000, costo_fin:146625,
       utilidad_orig:1075016, util_pct_orig:0.2756 }
   ],
@@ -470,8 +470,11 @@ function calcCosts(p, newPrecio, newDirEdif, newDirUrb) {
   const urbRatio  = p.dir_urb > 0 ? newDirUrb / p.dir_urb : 1;
   const new_urb_lote = p.urb_lote * urbRatio;
 
-  // Terreno (F31) — fijo, no cambia con sliders
-  const terreno = p.terreno_f29;
+  // Terreno F29 — Reserva Cumbres Rios: 21% del precio de venta (dinámico)
+  // Resto de proyectos: valor fijo de la fila 29
+  const terreno = p.terreno_pct_precio
+    ? newPrecio * p.terreno_pct_precio
+    : p.terreno_f29;
 
   // ISR/IMSS — fijo
   const isr_casa = p.isr_casa;
@@ -603,8 +606,8 @@ function recalc(){
   document.getElementById('ks-edif').textContent=pct(c.tot_edif/newP)+' · $'+n(c.edif_m2)+'/m²';
   document.getElementById('kv-urb').textContent='$'+n(c.new_urb_lote);
   document.getElementById('ks-urb').textContent=pct(c.new_urb_lote/newP)+' del precio';
-  document.getElementById('kv-terr').textContent='$'+n(p.terreno_f29);
-  document.getElementById('ks-terr').textContent=pct(p.terreno_f29/newP)+' del precio';
+  document.getElementById('kv-terr').textContent='$'+n(c.terreno);
+  document.getElementById('ks-terr').textContent=pct(c.terreno/newP)+' del precio'+(p.terreno_pct_precio?' · 21% precio':'');
 
   // Scenario
   const isBase=Math.abs(dP)<1&&Math.abs(dE)<1&&Math.abs(dU)<1;
